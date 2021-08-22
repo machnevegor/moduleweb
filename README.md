@@ -1,8 +1,12 @@
-# MEB | Docs for [ModuleWeb](https://pypi.org/project/moduleweb/) [v1.0]
+[![Python ^3.7](https://img.shields.io/static/v1?label=python&message=%5E3.7&color=brightgreen)](https://www.python.org/downloads/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/moduleweb?color=brightgreen)](https://pypistats.org/packages/moduleweb/)
+[![PyPI - Status](https://img.shields.io/pypi/status/moduleweb?color=brightgreen)](https://pypi.org/project/moduleweb/)
+
+# MEB | Docs for [ModuleWeb](https://github.com/machnevegor/ModuleWeb) [[v1.0]](https://pypi.org/project/moduleweb/)
 
 ## Introduction
 
-> **[ModuleWeb](https://pypi.org/project/moduleweb/)** is a multi-purpose library that aims to speed up the development of web applications and make it convenient to route your project. **[ModuleWeb](https://pypi.org/project/moduleweb/)** is written in **[Python](https://www.python.org)** using the multifunctional **[Aiohttp](https://docs.aiohttp.org/en/stable/)** framework and the powerful **[Jinja2](https://jinja2docs.readthedocs.io/en/stable/)** template engine. With the help of **[ModuleWeb](https://pypi.org/project/moduleweb/)** tools, you can quickly and conveniently write highly loaded, easily scalable and, most importantly, asynchronous web applications. If you are new to programming, then do not worry, **[ModuleWeb](https://pypi.org/project/moduleweb/)** will be a good start in the web. Well, let's move on to the [Installation](#installation) and [Quickstart & Docs](#quickstart--docs)!
+> **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** is a multi-purpose library that aims to speed up the development of web applications and make it convenient to route your project. **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** is written in **[Python](https://www.python.org)** using the multifunctional **[Aiohttp](https://docs.aiohttp.org/en/stable/)** framework and the powerful **[Jinja2](https://jinja2docs.readthedocs.io/en/stable/)** template engine. With the help of **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** tools, you can quickly and conveniently write highly loaded, easily scalable and, most importantly, asynchronous web applications. If you are new to programming, then do not worry, **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** will be a good start in the web. Well, let's move on to the [Installation](#installation) and [Quickstart & Docs](#quickstart--docs)!
 
 ## Installation
 
@@ -22,9 +26,9 @@ pip install moduleweb
 
 #### File structure
 
-> Before we start, I would like to note that **[ModuleWeb](https://pypi.org/project/moduleweb/)** is called so for a reason. A module in **[ModuleWeb](https://pypi.org/project/moduleweb/)** is a unit of your application that is designed to store a file with a router, a folder with your templates and a set of some separate logic. You don't need to write the entire application in one file, because this is wrong, instead get used to the good and divide everything into modules!
+> Before we start, I would like to note that **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** is called so for a reason. A module in **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** is a unit of your application that is designed to store a file with a router, a folder with your templates and a set of some separate logic. You don't need to write the entire application in one file, because this is wrong, instead get used to the good and divide everything into modules!
 
-The file structure of an application written in **[ModuleWeb](https://pypi.org/project/moduleweb/)** can be absolutely any form. Here is an example of a regular file structure designed for a minimalistic web application:
+The file structure of an application written in **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** can be absolutely any form. Here is an example of a regular file structure designed for a minimalistic web application:
 
 ```
 my_first_app
@@ -39,7 +43,7 @@ my_first_app
 └── main.py
 ```
 
-> Experienced programmers will probably be surprised and say: is static also a module? In fact, the reason why this is done in this example is very simple: why do we need to make two separate folders for middlewares and static files, if they can be combined into one module. Don't worry, if you want a folder with static, and not a module, then you can also do this in **[ModuleWeb](https://pypi.org/project/moduleweb/)**!
+> Experienced programmers will probably be surprised and say: is static also a module? In fact, the reason why this is done in this example is very simple: why do we need to make two separate folders for middlewares and static files, if they can be combined into one module. Don't worry, if you want a folder with static, and not a module, then you can also do this in **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)**!
 
 ---
 
@@ -62,7 +66,7 @@ app.run()
 
 I understand that this may seem difficult for some, but let's take everything in order:
 
-- In the first line, we simply import the web from the **[ModuleWeb](https://pypi.org/project/moduleweb/)** library.
+- In the first line, we simply import the web from the **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** library.
 - In the next line, we will initialize the application. By the way, if you want to initialize the application in another file, namely a file that is not \_\_main\_\_, it is recommended to pass \_\_name\_\_ to web.App to avoid path and route conflicts when building a project and running it!
 - Next comes the part that is a little more complicated than the previous ones, so let's analyze it in the next paragraph, but for now we will discuss the very end. The very last line indicates the start of the application launch. By default, your web application will start on localhost with port 8000. If you want to change the host or port, you will need to pass the host and port separately.
 
@@ -112,7 +116,7 @@ Let me tell you what each part of the code is responsible for, as I did earlier:
 
 - In the first line, we also import web.
 - Next, we initialize the router and pass the options you need to it. If you only need a router, then you can not transmit anything. We will return to the router options later...
-- Then we use a special decorator based on the router instance to wrap the handler. This asynchronous handler will be called every time the route passed to the decorator is requested from the server. It is also important to note that there are two types of get and post requests in **[ModuleWeb](https://pypi.org/project/moduleweb/)**. At the very end of the handler, we must return some result. It is important to note that we can't just return, for example, a string. Your result must first pass a special method, for example, as web.response, but we will return to all methods later.
+- Then we use a special decorator based on the router instance to wrap the handler. This asynchronous handler will be called every time the route passed to the decorator is requested from the server. It is also important to note that there are two types of get and post requests in **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)**. At the very end of the handler, we must return some result. It is important to note that we can't just return, for example, a string. Your result must first pass a special method, for example, as web.response, but we will return to all methods later.
 
 ---
 
@@ -156,7 +160,7 @@ It is important to know that, unlike preroute, the template option applies to th
 
 #### Types of responses
 
-During the construction of the application, you will need to think about how your handlers will return data or how they will react. At the moment, there are three built-in response types in **[ModuleWeb](https://pypi.org/project/moduleweb/)** that are important to know about. The first type of response is quite primitive, it can return strings or JSON objects to the client, depending on what you pass to it: a dictionary or a string. Note that you can't just return a string or a dictionary at the very end of the handler: it is important to put them initially in web.response. Here is an example of using web.response to send a string or a JSON object to the client:
+During the construction of the application, you will need to think about how your handlers will return data or how they will react. At the moment, there are three built-in response types in **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** that are important to know about. The first type of response is quite primitive, it can return strings or JSON objects to the client, depending on what you pass to it: a dictionary or a string. Note that you can't just return a string or a dictionary at the very end of the handler: it is important to put them initially in web.response. Here is an example of using web.response to send a string or a JSON object to the client:
 
 ```python
 @router.get("/str")
@@ -176,7 +180,7 @@ async def redirect_handler(request):
     return web.redirect("/some/route/or/url")
 ```
 
-And finally, let's move on to the most interesting type of response that is built into **[ModuleWeb](https://pypi.org/project/moduleweb/)**. This type of response has the name render. It is designed to process your template and its components using the built-in powerful **[Jinja2](https://jinja2docs.readthedocs.io/en/stable/)** template engine. To call the render, you need to pass the first mandatory parameter is entry point for the render, and the second, but already optional parameter, the context in the form of a dictionary, if it is in your template. Let's take a look at an example where there is no context (in the future there will be an example where there is a context):
+And finally, let's move on to the most interesting type of response that is built into **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)**. This type of response has the name render. It is designed to process your template and its components using the built-in powerful **[Jinja2](https://jinja2docs.readthedocs.io/en/stable/)** template engine. To call the render, you need to pass the first mandatory parameter is entry point for the render, and the second, but already optional parameter, the context in the form of a dictionary, if it is in your template. Let's take a look at an example where there is no context (in the future there will be an example where there is a context):
 
 ```python
 @router.get("/render}")
@@ -243,4 +247,4 @@ async def error(request):
 
 ## Conclusion
 
-> **[ModuleWeb](https://pypi.org/project/moduleweb/)** can be a good library for you to create web applications using the modular method, whether you are a beginner or a pro. The ability to write asynchronous code, use all known libraries designed for **[Aiohttp](https://docs.aiohttp.org/en/stable/)**, use the built-in **[Jinja2](https://jinja2docs.readthedocs.io/en/stable/)** engine, modular architecture, relative and at the same time fundamentally independent of the application file structure paths, the ability to add statics, a special 404 page handler, the ability to quickly write code using decorators, convenient default values, the preroute option for each router, a well-thought-out route system that solves the errors of other **[Python](https://www.python.org)** frameworks, and much more — isn't it a miracle?
+> **[ModuleWeb](https://github.com/machnevegor/ModuleWeb)** can be a good library for you to create web applications using the modular method, whether you are a beginner or a pro. The ability to write asynchronous code, use all known libraries designed for **[Aiohttp](https://docs.aiohttp.org/en/stable/)**, use the built-in **[Jinja2](https://jinja2docs.readthedocs.io/en/stable/)** engine, modular architecture, relative and at the same time fundamentally independent of the application file structure paths, the ability to add statics, a special 404 page handler, the ability to quickly write code using decorators, convenient default values, the preroute option for each router, a well-thought-out route system that solves the errors of other **[Python](https://www.python.org)** frameworks, and much more — isn't it a miracle?
