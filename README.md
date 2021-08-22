@@ -1,8 +1,8 @@
+# MEB | Docs for [ModuleWeb](https://github.com/machnevegor/ModuleWeb) [[v1.0]](https://pypi.org/project/moduleweb/)
+
 [![Python ^3.7](https://img.shields.io/static/v1?label=python&message=%5E3.7&color=brightgreen)](https://www.python.org/downloads/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/moduleweb?color=brightgreen)](https://pypistats.org/packages/moduleweb/)
 [![PyPI - Status](https://img.shields.io/pypi/status/moduleweb?color=brightgreen)](https://pypi.org/project/moduleweb/)
-
-# MEB | Docs for [ModuleWeb](https://github.com/machnevegor/ModuleWeb) [[v1.0]](https://pypi.org/project/moduleweb/)
 
 ## Introduction
 
