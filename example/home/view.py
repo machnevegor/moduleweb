@@ -21,9 +21,9 @@ async def json(request):
     return web.response({"response": "json"})
 
 
-@router.get("~/redirect}")
+@router.get("~/redirect")
 async def redirect(request):
-    return web.redirect("/")
+    return web.redirect("https://github.com/machnevegor/ModuleWeb")
 
 
 @router.get("~/render")

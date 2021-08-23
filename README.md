@@ -194,7 +194,7 @@ async def render_handler(request):
 
 #### Template сomponents
 
-It is worth talking a little more about templates and their components. First of all, I would like to say that you can arrange the component files inside any module template as you like. To interact with any component, you need to use the appropriate construction: the template name + the path from this template to the component you need. Here is an example of how you can render a template that has files with markup and styles:
+Let's talk a little more about templates and their components. First, I would like to note that you can arrange all the files inside the templates as you want. You should have already had a question: how to access the template components? You need to interact with the template components according to the following rules: the template name (which you specified earlier via web.template) + the path relative to this template to the component. Be careful, because when calling web.render, you need to pass the path according to the rule that we just discussed, and already inside the components themselves, you need to specify the route, also according to the rule that we have just discussed. Here is one example of how you can render a component that has a few styles and context:
 
 ```python
 @router.get("/render")
@@ -208,7 +208,7 @@ async def render_handler(request):
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="home/styles.css" />
+    <link rel="stylesheet" href="/home/styles.css" />
   </head>
   <body>
     <h1>

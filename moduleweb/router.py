@@ -315,7 +315,9 @@ class Router:
 
             try:
                 return await handler(request)
-            except web.HTTPException:
+            except web.HTTPException as exc:
+                if exc.status != 404:
+                    raise
                 return await error_handler(request)
 
         return middleware
