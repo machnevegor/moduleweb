@@ -1,5 +1,5 @@
 ########################################
-# Project name: MEB | ModuleWeb [v1.0] #
+# Project name: MEB | ModuleWeb [v1.1] #
 # Code&Doc: > github.com/machnevegor   #
 # Author's name:    | Link to VK/TG:   #
 # > Machnev Egor    | > @machnev_egor  #
@@ -113,7 +113,7 @@ class App:
         prefixes_dict = {}
         for instance in self._functionality:
             converted_instance = instance._convert_instance(self._root)
-            if "middleware" in converted_instance:
+            if "middlewares" in converted_instance:
                 for middleware in converted_instance["middlewares"]:
                     self.app.middlewares.append(middleware)
             if "routes" in converted_instance:
@@ -317,7 +317,7 @@ def static(route: str, path: str):
     return Static(route, path)
 
 ########################################
-# Project name: MEB | ModuleWeb [v1.0] #
+# Project name: MEB | ModuleWeb [v1.1] #
 # Code&Doc: > github.com/machnevegor   #
 # Author's name:    | Link to VK/TG:   #
 # > Machnev Egor    | > @machnev_egor  #

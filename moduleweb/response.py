@@ -1,5 +1,5 @@
 ########################################
-# Project name: MEB | ModuleWeb [v1.0] #
+# Project name: MEB | ModuleWeb [v1.1] #
 # Code&Doc: > github.com/machnevegor   #
 # Author's name:    | Link to VK/TG:   #
 # > Machnev Egor    | > @machnev_egor  #
@@ -275,7 +275,7 @@ def redirect(route: str):
     return Redirect(route)
 
 ########################################
-# Project name: MEB | ModuleWeb [v1.0] #
+# Project name: MEB | ModuleWeb [v1.1] #
 # Code&Doc: > github.com/machnevegor   #
 # Author's name:    | Link to VK/TG:   #
 # > Machnev Egor    | > @machnev_egor  #

@@ -1,5 +1,5 @@
 ########################################
-# Project name: MEB | ModuleWeb [v1.0] #
+# Project name: MEB | ModuleWeb [v1.1] #
 # Code&Doc: > github.com/machnevegor   #
 # Author's name:    | Link to VK/TG:   #
 # > Machnev Egor    | > @machnev_egor  #
@@ -197,6 +197,52 @@ class Router:
 
         return decorator
 
+    def __common_middleware(self, common_middleware: object):
+        """
+        Description
+        -----------
+        A service method. Allows you to create a middleware
+        of the standard type. This method works as a wrapper,
+        so when using it, you don't have to call the second
+        argument by the name handler.
+
+        Expects
+        -------
+        :param common_middleware: (object)
+            Middleware, which will be wrapped and
+            in which in the future you can call the
+            arguments of the function as you want.
+
+        Returns
+        -------
+        The wrapper that will later call the main middleware.
+        """
+
+        @web.middleware
+        async def middleware(request: object, handler: object):
+            """
+            Description
+            -----------
+            A service method. This wrapper is designed so that
+            in the future you can call the second argument by
+            a name that you can think of yourself.
+
+            Expects
+            -------
+            :param request: (object)
+                A request object intended for both handlers.
+            :param handler: (object)
+                The initial handler for the launch attempt.
+
+            Returns
+            -------
+            Returns the result of the wrapped middleware.
+            """
+
+            return await common_middleware(request, handler)
+
+        return middleware
+
     def __response_parser(self, handler: object):
         """
         Description
@@ -246,7 +292,7 @@ class Router:
         """
 
         @web.middleware
-        async def middleware(request: object, primary_handler: object):
+        async def middleware(request: object, handler: object):
             """
             Description
             -----------
@@ -257,7 +303,7 @@ class Router:
             -------
             :param request: (object)
                 A request object intended for both handlers.
-            :param primary_handler: (object)
+            :param handler: (object)
                 The initial handler for the launch attempt.
 
             Returns
@@ -268,9 +314,9 @@ class Router:
             """
 
             try:
-                return await primary_handler(request)
+                return await handler(request)
             except web.HTTPException:
-                return await self.__response_parser(error_handler(request))
+                return await error_handler(request)
 
         return middleware
 
@@ -374,9 +420,10 @@ class Router:
         middlewares = []
         for middleware in self._middlewares:
             if middleware["type"] == "common":
-                middlewares.append(web.middleware(middleware["middleware"]))
+                middlewares.append(self.__common_middleware(middleware["middleware"]))
             elif middleware["type"] == "error":
-                middlewares.append(self.__error_middleware(middleware["handler"]))
+                error_handler = self.__response_parser(middleware["handler"])
+                middlewares.append(self.__error_middleware(error_handler))
         routes = []
         for route in self._routes:
             if route["type"] == "get":
@@ -549,7 +596,7 @@ def template(name: str, folder: str = "template"):
     return Template(name, folder)
 
 ########################################
-# Project name: MEB | ModuleWeb [v1.0] #
+# Project name: MEB | ModuleWeb [v1.1] #
 # Code&Doc: > github.com/machnevegor   #
 # Author's name:    | Link to VK/TG:   #
 # > Machnev Egor    | > @machnev_egor  #
