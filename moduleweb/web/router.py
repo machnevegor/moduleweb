@@ -1,4 +1,3 @@
-from typing import NamedTuple
 from aiohttp import web
 
 METH_VIEW = "*"
@@ -13,11 +12,12 @@ TYPE_COMMON = "COMMON"
 TYPE_ERROR = "ERROR"
 
 
-class Route(NamedTuple):
-    path: str
-    method: str
-    handler: object
-    kwargs: dict
+class Route:
+    def __init__(self, path: str, method: str, handler: object, kwargs: dict):
+        self.path = path
+        self.method = method
+        self.handler = handler
+        self.kwargs = kwargs
 
     def __repr__(self):
         return f"<WebRoute path={self.path}, method={self.method}>"
@@ -103,19 +103,20 @@ class RoutesMixin:
             route.register(router)
 
 
-class Middleware(NamedTuple):
-    handler: object
-    type: str
+class Middleware:
+    def __init__(self, handler: object, type: str):
+        self.handler = handler
+        self.type = type
 
     def __repr__(self):
         return f"<WebMiddleware type={self.type}>"
 
     @web.middleware
-    async def common(request: object, handler: object):
+    async def common(self, request: object, handler: object):
         return await self.handler(request, handler)
 
     @web.middleware
-    async def error(request: object, handler: object):
+    async def error(self, request: object, handler: object):
         try:
             return await handler(request)
         except web.HTTPException as exc:
