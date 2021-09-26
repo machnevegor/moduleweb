@@ -20,7 +20,7 @@ class Route:
         self.kwargs = kwargs
 
     def __repr__(self):
-        return f"<MW WebRoute path='{self.path}', method='{self.method}'>"
+        return f"<MW-WebRoute path='{self.path}', method='{self.method}'>"
 
     def register(self, router: object):
         router.add_route(self.method, self.path, self.handler, **self.kwargs)
@@ -76,7 +76,7 @@ class RoutesMixin:
     def _find_options(self, type: str):
         suitable_options = []
         for option in self.options:
-            if isinstance(option, object) and f"MW {type}" in str(option):
+            if isinstance(option, object) and f"MW-{type}" in str(option):
                 suitable_options.append(option)
         return suitable_options
 
@@ -104,7 +104,7 @@ class Middleware:
         self.type = type
 
     def __repr__(self):
-        return f"<MW WebMiddleware type='{self.type}'>"
+        return f"<MW-WebMiddleware type='{self.type}'>"
 
     @web.middleware
     async def common(self, request: object, handler: object):
@@ -166,7 +166,7 @@ class Router(BaseRouter):
         super().__init__(options)
 
     def __repr__(self):
-        return f"<MW WebRouter routes={len(self.routes)}, middlewares={len(self.middlewares)}>"
+        return f"<MW-WebRouter routes={len(self.routes)}, middlewares={len(self.middlewares)}>"
 
     def register(self, app: object, path: str):
         super().register(app, path)

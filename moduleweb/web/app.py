@@ -10,20 +10,22 @@ class App(web.Application):
         self.middlewares.append(self._response_processor)
 
     def __repr__(self):
-        return f"<MW ModularApplication 0x{id(self):x}>"
+        return f"<MW-ModularApplication 0x{id(self):x}>"
 
     @web.middleware
     async def _response_processor(self, request: object, handler: object):
         response = await handler(request)
-        for response_type in ["TextResponse", "RenderResponse", "FileResponse", "RedirectResponse"]:
-            if isinstance(response, object) and f"MW {response_type}" in str(response):
+        for type in ["TextResponse", "RenderResponse", "FileResponse", "RedirectResponse"]:
+            if isinstance(response, object) and f"MW-{type}" in str(response):
                 return response.parse(request)
         return response
 
     def add(self, modules: list):
         for module in modules:
-            assert isinstance(module, object) and "MW ApplicationModule" in str(module), \
-                "The add method registers only modules for the application!"
+            for type in ["ApplicationModule", "WebRouter"]:
+                assert isinstance(module, object) and f"MW-{type}" in str(module), \
+                    "The add method registers only modules for the application!"
+                break
             module.register(self, self.root)
 
     def setup_render(self):

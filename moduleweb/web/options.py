@@ -7,7 +7,7 @@ class Template(NamedTuple):
     kwargs: dict
 
     def __repr__(self):
-        return f"<MW TemplateOption path='/{self.name}'>"
+        return f"<MW-TemplateOption path='/{self.name}'>"
 
     def register(self, router: object, path: str):
         assert not self.name in ["", "/"], \
@@ -25,7 +25,7 @@ class Preroute(NamedTuple):
     kwargs: dict
 
     def __repr__(self):
-        return f"<MW PrerouteOption prefix='{self.prefix}'>"
+        return f"<MW-PrerouteOption prefix='{self.prefix}'>"
 
     def parse(self, routes: list):
         for route in routes:
