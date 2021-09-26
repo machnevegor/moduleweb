@@ -22,6 +22,8 @@ class App(web.Application):
 
     def add(self, modules: list):
         for module in modules:
+            assert isinstance(module, object) and "MW ApplicationModule" in str(module), \
+                "The add method registers only modules for the application!"
             module.register(self, self.root)
 
     def setup_render(self):
