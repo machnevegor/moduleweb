@@ -7,7 +7,7 @@ class Module(NamedTuple):
     router_location: str
 
     def __repr__(self):
-        return f"<ApplicationModule directory={self.module_path}>"
+        return f"<MW ApplicationModule module_path='{self.module_path}'>"
 
     def register(self, app: object, path: str):
         router_location = self.router_location.replace("/", ".")

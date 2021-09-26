@@ -23,7 +23,7 @@ class Response(BaseResponse):
         self.content_type = content_type
 
     def __repr__(self):
-        return f"<TextResponse content_type={self.content_type}>"
+        return f"<MW TextResponse content_type='{self.content_type}'>"
 
     def parse(self, *args, **kwargs):
         response = web.Response(
@@ -50,7 +50,7 @@ class Render(BaseResponse):
         self.context = context
 
     def __repr__(self):
-        return f"<RenderResponse entry_point={self.entry_point}>"
+        return f"<MW RenderResponse entry_point='{self.entry_point}'>"
 
     def parse(self, request: object, *args, **kwargs):
         response = render_template(
@@ -73,7 +73,7 @@ class File(BaseResponse):
         self.path = path
 
     def __repr__(self):
-        return f"<FileResponse path={self.path}>"
+        return f"<MW FileResponse path='{self.path}'>"
 
     def parse(self, *args, **kwargs):
         response = web.FileResponse(
@@ -94,7 +94,7 @@ class Redirect(BaseResponse):
         self.location = location
 
     def __repr__(self):
-        return f"<RedirectResponse to={self.location}>"
+        return f"<MW RedirectResponse location='{self.location}'>"
 
     def parse(self, *args, **kwargs):
         response = web.HTTPSeeOther(

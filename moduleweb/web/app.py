@@ -10,13 +10,13 @@ class App(web.Application):
         self.middlewares.append(self._response_processor)
 
     def __repr__(self):
-        return f"<ModularApplication 0x{id(self):x}>"
+        return f"<MW ModularApplication 0x{id(self):x}>"
 
     @web.middleware
     async def _response_processor(self, request: object, handler: object):
         response = await handler(request)
         for response_type in ["TextResponse", "RenderResponse", "FileResponse", "RedirectResponse"]:
-            if isinstance(response, object) and response_type in str(response):
+            if isinstance(response, object) and f"MW {response_type}" in str(response):
                 return response.parse(request)
         return response
 
@@ -33,9 +33,4 @@ class App(web.Application):
 
     def run(self, *, host: str = "localhost", port: int = 8000, **kwargs):
         self.setup_render()
-        web.run_app(
-            self,
-            host=host,
-            port=port,
-            **kwargs
-        )
+        web.run_app(self, host=host, port=port, **kwargs)

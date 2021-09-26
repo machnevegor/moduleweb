@@ -7,16 +7,12 @@ class Template(NamedTuple):
     kwargs: dict
 
     def __repr__(self):
-        return f"<TemplateOption path=/{self.name}>"
+        return f"<MW TemplateOption path='/{self.name}'>"
 
     def register(self, router: object, path: str):
         assert not self.name in ["", "/"], \
             "An empty name cannot be passed to the template option!"
-        router.add_static(
-            "/" + self.name,
-            path + self.folder,
-            **self.kwargs
-        )
+        router.add_static("/" + self.name, path + self.folder, **self.kwargs)
 
 
 def template(name: str, folder: str = "template", **kwargs):
@@ -29,7 +25,7 @@ class Preroute(NamedTuple):
     kwargs: dict
 
     def __repr__(self):
-        return f"<PrerouteOption prefix={self.prefix}>"
+        return f"<MW PrerouteOption prefix='{self.prefix}'>"
 
     def parse(self, routes: list):
         for route in routes:
