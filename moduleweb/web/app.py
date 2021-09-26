@@ -15,10 +15,9 @@ class App(web.Application):
     @web.middleware
     async def _response_processor(self, request: object, handler: object):
         response = await handler(request)
-        if isinstance(response, object):
-            for response_type in ["TextResponse", "RenderResponse", "FileResponse", "RedirectResponse"]:
-                if response_type in str(response):
-                    return response.parse(request)
+        for response_type in ["TextResponse", "RenderResponse", "FileResponse", "RedirectResponse"]:
+            if isinstance(response, object) and response_type in str(response):
+                return response.parse(request)
         return response
 
     def add(self, modules: list):
