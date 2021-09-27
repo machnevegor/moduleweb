@@ -22,10 +22,12 @@ class App(web.Application):
 
     def add(self, modules: list):
         for module in modules:
+            is_module = False
             for type in ["ApplicationModule", "WebRouter"]:
-                assert isinstance(module, object) and f"MW-{type}" in str(module), \
-                    "The add method registers only modules for the application!"
-                break
+                if isinstance(module, object) and f"MW-{type}" in str(module):
+                    is_module = True
+            assert is_module, \
+                "The add method registers only modules for the application!"
             module.register(self, self.root)
 
     def setup_render(self):

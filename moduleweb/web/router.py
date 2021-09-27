@@ -13,29 +13,37 @@ TYPE_ERROR = "ERROR"
 
 
 class Route:
-    def __init__(self, path: str, method: str, handler: object, kwargs: dict):
-        self.path = path
+    def __init__(self, uri: str, method: str, handler: object, kwargs: dict):
+        self.uri = uri
         self.method = method
         self.handler = handler
         self.kwargs = kwargs
 
     def __repr__(self):
-        return f"<MW-WebRoute path='{self.path}', method='{self.method}'>"
+        return f"<MW-WebRoute path='{self.uri}', method='{self.method}'>"
 
     def register(self, router: object):
-        router.add_route(self.method, self.path, self.handler, **self.kwargs)
+        router.add_route(self.method, self.uri, self.handler, **self.kwargs)
 
 
 class RoutesMixin:
     def __init__(self, options: list, *args, **kwargs):
+        for option in options:
+            is_option = False
+            for type in ["TemplateOption", "PrerouteOption"]:
+                if isinstance(option, object) and f"MW-{type}" in str(option):
+                    is_option = True
+            assert is_option, \
+                "You can only add template or pre route option to the router!"
+
         self.options = options
         self.routes = []
 
-    def route(self, path: str, *, methods: list = [METH_GET, METH_POST], **kwargs):
+    def route(self, uri: str, *, methods: list = [METH_GET, METH_POST], **kwargs):
         def inner(handler: object):
             self.routes += [
                 Route(
-                    path,
+                    uri,
                     method,
                     handler,
                     kwargs
@@ -45,28 +53,28 @@ class RoutesMixin:
 
         return inner
 
-    def head(self, path: str, **kwargs):
-        return self.route(path, methods=[METH_HEAD], **kwargs)
+    def head(self, uri: str, **kwargs):
+        return self.route(uri, methods=[METH_HEAD], **kwargs)
 
-    def get(self, path: str, **kwargs):
-        return self.route(path, methods=[METH_GET], **kwargs)
+    def get(self, uri: str, **kwargs):
+        return self.route(uri, methods=[METH_GET], **kwargs)
 
-    def post(self, path: str, **kwargs):
-        return self.route(path, methods=[METH_POST], **kwargs)
+    def post(self, uri: str, **kwargs):
+        return self.route(uri, methods=[METH_POST], **kwargs)
 
-    def put(self, path: str, **kwargs):
-        return self.route(path, methods=[METH_PUT], **kwargs)
+    def put(self, uri: str, **kwargs):
+        return self.route(uri, methods=[METH_PUT], **kwargs)
 
-    def patch(self, path: str, **kwargs):
-        return self.route(path, methods=[METH_PATCH], **kwargs)
+    def patch(self, uri: str, **kwargs):
+        return self.route(uri, methods=[METH_PATCH], **kwargs)
 
-    def delete(self, path: str, **kwargs):
-        return self.route(path, methods=[METH_DELETE], **kwargs)
+    def delete(self, uri: str, **kwargs):
+        return self.route(uri, methods=[METH_DELETE], **kwargs)
 
-    def lib(self, path: str, handler: object, **kwargs):
+    def lib(self, uri: str, handler: object, **kwargs):
         self.routes.append(
             Route(
-                path,
+                uri,
                 METH_VIEW,
                 handler,
                 kwargs

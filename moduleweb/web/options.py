@@ -20,7 +20,7 @@ def template(name: str, folder: str = "template", **kwargs):
 
 
 class Preroute(NamedTuple):
-    path: str
+    uri: str
     prefix: str
     kwargs: dict
 
@@ -29,10 +29,10 @@ class Preroute(NamedTuple):
 
     def parse(self, routes: list):
         for route in routes:
-            if route.path.startswith(self.prefix):
-                route.path = self.path + route.path[len(self.prefix):]
+            if route.uri.startswith(self.prefix):
+                route.uri = self.uri + route.uri[len(self.prefix):]
                 route.kwargs = {**self.kwargs, **route.kwargs}
 
 
-def preroute(path: str, prefix: str = "~", **kwargs):
-    return Preroute(path, prefix, kwargs)
+def preroute(uri: str, prefix: str = "~", **kwargs):
+    return Preroute(uri, prefix, kwargs)
