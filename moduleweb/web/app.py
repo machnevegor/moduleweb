@@ -21,7 +21,7 @@ class App(web.Application):
                 "The add method registers only modules with a router for the application!"
             module.register(self, self.root)
 
-    def setup_render(self):
+    def prepare(self):
         prefixes_dict = {}
         for resource in self.router._resources:
             if validate_type(resource, "StaticResource"):
@@ -30,5 +30,5 @@ class App(web.Application):
         setup(self, loader=PrefixLoader(prefixes_dict))
 
     def run(self, *, host: str = "localhost", port: int = 8000, **kwargs):
-        self.setup_render()
+        self.prepare()
         web.run_app(self, host=host, port=port, **kwargs)
