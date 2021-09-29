@@ -22,12 +22,12 @@ class App(web.Application):
             module.register(self, self.root)
 
     def prepare(self):
-        prefixes_dict = {}
+        directory_prefixes = {}
         for resource in self.router._resources:
             if validate_type(resource, "StaticResource"):
                 directory = FileSystemLoader(resource._directory)
-                prefixes_dict[resource._prefix[1:]] = directory
-        setup(self, loader=PrefixLoader(prefixes_dict))
+                directory_prefixes[resource._prefix[1:]] = directory
+        setup(self, loader=PrefixLoader(directory_prefixes))
 
     def run(self, *, host: str = "localhost", port: int = 8000, **kwargs):
         self.prepare()
