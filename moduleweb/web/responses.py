@@ -43,8 +43,8 @@ class Text(BaseResponse):
     def parse(self, *args, **kwargs):
         response = web.Response(
             text=self.data,
-            content_type=self.content_type
-                         ** self.kwargs
+            content_type=self.content_type,
+            **self.kwargs
         )
         self.prepare(response)
         return response
