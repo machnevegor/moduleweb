@@ -2,6 +2,21 @@ from aiohttp import web
 from json import dumps
 from aiohttp_jinja2 import render_template
 
+from .tools import validate_type
+
+
+@web.middleware
+async def response_processor(request: object, handler: object):
+    response = await handler(request)
+    if validate_type(response, [
+        "MW-TextResponse",
+        "MW-RenderResponse",
+        "MW-FileResponse",
+        "MW-RedirectResponse"
+    ]):
+        return response.parse(request)
+    return response
+
 
 class BaseResponse:
     def __init__(self, **kwargs):
@@ -16,7 +31,7 @@ class BaseResponse:
             response.headers[name] = value
 
 
-class Response(BaseResponse):
+class Text(BaseResponse):
     def __init__(self, data: str, content_type: str, **kwargs):
         super().__init__(**kwargs)
         self.data = data
@@ -28,19 +43,19 @@ class Response(BaseResponse):
     def parse(self, *args, **kwargs):
         response = web.Response(
             text=self.data,
-            content_type=self.content_type,
-            **self.kwargs
+            content_type=self.content_type
+                         ** self.kwargs
         )
         self.prepare(response)
         return response
 
 
-def text(data: str, *, content_type: str = "text/plain", **kwargs):
-    return Response(str(data), content_type, **kwargs)
+def text(data: str, *, content_type="text/plain", **kwargs):
+    return Text(data, content_type, **kwargs)
 
 
-def json(data: dict, *, content_type: str = "application/json", **kwargs):
-    return Response(dumps(data), content_type, **kwargs)
+def json(data: dict, *, content_type="application/json", **kwargs):
+    return Text(dumps(data), content_type, **kwargs)
 
 
 class Render(BaseResponse):
@@ -99,7 +114,6 @@ class Redirect(BaseResponse):
     def parse(self, *args, **kwargs):
         response = web.HTTPSeeOther(
             location=self.location,
-            headers=self.headers,
             **self.kwargs
         )
         self.prepare(response)

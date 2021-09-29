@@ -1,17 +1,18 @@
-from typing import NamedTuple
+from attr import dataclass
 
 
-class Template(NamedTuple):
+@dataclass(repr=False)
+class Template:
     name: str
     folder: str
     kwargs: dict
 
     def __repr__(self):
-        return f"<MW-TemplateOption path='/{self.name}'>"
+        return f"<MW-TemplateOption name='{self.name}'>"
 
     def register(self, router: object, path: str):
-        assert not self.name in ["", "/"], \
-            "An empty name cannot be passed to the template option!"
+        assert not self.name.startswith("/") and self.name, \
+            "The template name cannot be registered because it starts with a slash or empty!"
         router.add_static("/" + self.name, path + self.folder, **self.kwargs)
 
 
@@ -19,7 +20,8 @@ def template(name: str, folder: str = "template", **kwargs):
     return Template(name, folder, kwargs)
 
 
-class Preroute(NamedTuple):
+@dataclass(repr=False)
+class Preroute:
     uri: str
     prefix: str
     kwargs: dict

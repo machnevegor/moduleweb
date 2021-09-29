@@ -1,26 +1,21 @@
-from aiohttp import web
+from attr import dataclass
+from aiohttp import hdrs, web
 
-METH_HEAD = "HEAD"
-METH_GET = "GET"
-METH_POST = "POST"
-METH_PUT = "PUT"
-METH_PATCH = "PATCH"
-METH_DELETE = "DELETE"
-METH_VIEW = "*"
+from .tools import validate_type, find_type
 
 TYPE_COMMON = "COMMON"
 TYPE_ERROR = "ERROR"
 
 
+@dataclass(repr=False)
 class Route:
-    def __init__(self, uri: str, method: str, handler: object, kwargs: dict):
-        self.uri = uri
-        self.method = method
-        self.handler = handler
-        self.kwargs = kwargs
+    uri: str
+    method: str
+    handler: object
+    kwargs: dict
 
     def __repr__(self):
-        return f"<MW-WebRoute path='{self.uri}', method='{self.method}'>"
+        return f"<MW-WebRoute uri='{self.uri}', method='{self.method}'>"
 
     def register(self, router: object):
         router.add_route(self.method, self.uri, self.handler, **self.kwargs)
@@ -29,17 +24,13 @@ class Route:
 class RoutesMixin:
     def __init__(self, options: list, *args, **kwargs):
         for option in options:
-            is_option = False
-            for type in ["TemplateOption", "PrerouteOption"]:
-                if isinstance(option, object) and f"MW-{type}" in str(option):
-                    is_option = True
-            assert is_option, \
-                "You can only add template or pre route option to the router!"
+            assert validate_type(option, ["MW-TemplateOption", "MW-PrerouteOption"]), \
+                "You can only add template or preroute option to the router!"
 
         self.options = options
         self.routes = []
 
-    def route(self, uri: str, *, methods: list = [METH_GET, METH_POST], **kwargs):
+    def route(self, uri: str, *, methods: list = [hdrs.METH_GET, hdrs.METH_POST], **kwargs):
         def inner(handler: object):
             self.routes += [
                 Route(
@@ -54,47 +45,40 @@ class RoutesMixin:
         return inner
 
     def head(self, uri: str, **kwargs):
-        return self.route(uri, methods=[METH_HEAD], **kwargs)
+        return self.route(uri, methods=[hdrs.METH_HEAD], **kwargs)
 
     def get(self, uri: str, **kwargs):
-        return self.route(uri, methods=[METH_GET], **kwargs)
+        return self.route(uri, methods=[hdrs.METH_GET], **kwargs)
 
     def post(self, uri: str, **kwargs):
-        return self.route(uri, methods=[METH_POST], **kwargs)
+        return self.route(uri, methods=[hdrs.METH_POST], **kwargs)
 
     def put(self, uri: str, **kwargs):
-        return self.route(uri, methods=[METH_PUT], **kwargs)
+        return self.route(uri, methods=[hdrs.METH_PUT], **kwargs)
 
     def patch(self, uri: str, **kwargs):
-        return self.route(uri, methods=[METH_PATCH], **kwargs)
+        return self.route(uri, methods=[hdrs.METH_PATCH], **kwargs)
 
     def delete(self, uri: str, **kwargs):
-        return self.route(uri, methods=[METH_DELETE], **kwargs)
+        return self.route(uri, methods=[hdrs.METH_DELETE], **kwargs)
 
     def lib(self, uri: str, handler: object, **kwargs):
         self.routes.append(
             Route(
                 uri,
-                METH_VIEW,
+                hdrs.METH_ANY,
                 handler,
                 kwargs
             )
         )
 
-    def _find_options(self, type: str):
-        suitable_options = []
-        for option in self.options:
-            if isinstance(option, object) and f"MW-{type}" in str(option):
-                suitable_options.append(option)
-        return suitable_options
-
     @property
     def templates(self):
-        return self._find_options("TemplateOption")
+        return find_type(self.options, "MW-TemplateOption")
 
     @property
     def preroutes(self):
-        return self._find_options("PrerouteOption")
+        return find_type(self.options, "MW-PrerouteOption")
 
     def register(self, app: object, path: str, *args, **kwargs):
         router = app.router
@@ -106,10 +90,10 @@ class RoutesMixin:
             route.register(router)
 
 
+@dataclass(repr=False)
 class Middleware:
-    def __init__(self, handler: object, type: str):
-        self.handler = handler
-        self.type = type
+    handler: object
+    type: str
 
     def __repr__(self):
         return f"<MW-WebMiddleware type='{self.type}'>"
