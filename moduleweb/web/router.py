@@ -72,7 +72,7 @@ class RoutesMixin:
             )
         )
 
-    def _find_options(self, type: str):
+    def _find_options(self, type: object):
         return [option for option in self.options if isinstance(option, type)]
 
     @property
