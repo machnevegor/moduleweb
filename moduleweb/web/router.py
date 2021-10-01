@@ -6,7 +6,7 @@ from .options import Template, Preroute
 TYPE_COMMON = "COMMON"
 TYPE_ERROR = "ERROR"
 
-1
+
 @dataclass(repr=False)
 class Route:
     uri: str
