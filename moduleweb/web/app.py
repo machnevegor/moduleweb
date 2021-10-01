@@ -19,7 +19,7 @@ class App(web.Application):
     def add(self, modules: list):
         for module in modules:
             assert isinstance(module, (Module, Router)), \
-                "The add method registers only modules with the router in the application!"
+                "The add method registers only modules for the application!"
             module.register(self, self.root)
 
     def setup_render(self):
