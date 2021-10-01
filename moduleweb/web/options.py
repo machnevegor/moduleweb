@@ -8,11 +8,11 @@ class Template:
     kwargs: dict
 
     def __repr__(self):
-        return f"<MW-TemplateOption name='{self.name}'>"
+        return f"<TemplateOption name='{self.name}'>"
 
     def register(self, router: object, path: str):
         assert not self.name.startswith("/") and self.name, \
-            "The template name cannot be registered because it starts with a slash or empty!"
+            "The template cannot be registered because name starts with a slash or is empty!"
         router.add_static("/" + self.name, path + self.folder, **self.kwargs)
 
 
@@ -27,7 +27,7 @@ class Preroute:
     kwargs: dict
 
     def __repr__(self):
-        return f"<MW-PrerouteOption prefix='{self.prefix}'>"
+        return f"<PrerouteOption prefix='{self.prefix}'>"
 
     def parse(self, routes: list):
         for route in routes:

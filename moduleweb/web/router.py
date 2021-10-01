@@ -1,7 +1,7 @@
 from attr import dataclass
 from aiohttp import hdrs, web
 
-from .tools import validate_type, find_type
+from .options import Template, Preroute
 
 TYPE_COMMON = "COMMON"
 TYPE_ERROR = "ERROR"
@@ -15,7 +15,7 @@ class Route:
     kwargs: dict
 
     def __repr__(self):
-        return f"<MW-WebRoute uri='{self.uri}', method='{self.method}'>"
+        return f"<WebRoute uri='{self.uri}', method='{self.method}'>"
 
     def register(self, router: object):
         router.add_route(self.method, self.uri, self.handler, **self.kwargs)
@@ -24,8 +24,8 @@ class Route:
 class RoutesMixin:
     def __init__(self, options: list, *args, **kwargs):
         for option in options:
-            assert validate_type(option, ["MW-TemplateOption", "MW-PrerouteOption"]), \
-                "You can only add template or preroute option to the router!"
+            assert isinstance(option, (Template, Preroute)), \
+                "Only templates and preroutes can be passed in the router option!"
 
         self.options = options
         self.routes = []
@@ -72,13 +72,16 @@ class RoutesMixin:
             )
         )
 
+    def find_options(self, type: str):
+        return [option for option in self.options if isinstance(option, type)]
+
     @property
     def templates(self):
-        return find_type(self.options, "MW-TemplateOption")
+        return self.find_options(Template)
 
     @property
     def preroutes(self):
-        return find_type(self.options, "MW-PrerouteOption")
+        return self.find_options(Preroute)
 
     def register(self, app: object, path: str, *args, **kwargs):
         router = app.router
@@ -96,7 +99,7 @@ class Middleware:
     type: str
 
     def __repr__(self):
-        return f"<MW-WebMiddleware type='{self.type}'>"
+        return f"<WebMiddleware type='{self.type}'>"
 
     @web.middleware
     async def common(self, request: object, handler: object):
@@ -158,7 +161,7 @@ class Router(BaseRouter):
         super().__init__(options)
 
     def __repr__(self):
-        return f"<MW-WebRouter routes={len(self.routes)}, middlewares={len(self.middlewares)}>"
+        return f"<WebRouter routes={len(self.routes)}, middlewares={len(self.middlewares)}>"
 
     def register(self, app: object, path: str):
         super().register(app, path)

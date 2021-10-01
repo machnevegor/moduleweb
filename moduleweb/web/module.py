@@ -1,7 +1,7 @@
 from attr import dataclass
 from importlib import import_module
 
-from .tools import validate_type
+from .router import Router
 
 
 @dataclass(repr=False)
@@ -10,13 +10,13 @@ class Module:
     router_location: str
 
     def __repr__(self):
-        return f"<MW-ApplicationModule module_path='{self.module_path}'>"
+        return f"<ApplicationModule module_path='{self.module_path}'>"
 
     def register(self, app: object, path: str):
         assert not self.module_path.startswith("/") and self.module_path, \
-            "The module cannot be registered because module_path starts with a slash or empty!"
+            "The module cannot be registered because module_path starts with a slash or is empty!"
         assert self.router_location.count(":") == 1, \
-            "The module cannot be registered because it is written incorrectly in router_location!"
+            "The module cannot be registered because router_location is written incorrectly!"
 
         view_path = self.router_location.split(":")[0]
         view_location = f"{self.module_path}.{view_path}".replace("/", ".")
@@ -24,8 +24,8 @@ class Module:
         router_name = self.router_location.split(":")[1]
         router_instance = getattr(view_instance, router_name)
 
-        assert validate_type(router_instance, "MW-WebRouter"), \
-            "The module cannot be registered because the router has not been found!"
+        assert isinstance(router_instance, Router), \
+            "The module cannot be registered because the router was not found in the instance!"
         return router_instance.register(app, path + self.module_path + "/")
 
 

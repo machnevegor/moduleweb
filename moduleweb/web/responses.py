@@ -2,21 +2,6 @@ from aiohttp import web
 from json import dumps
 from aiohttp_jinja2 import render_template
 
-from .tools import validate_type
-
-
-@web.middleware
-async def response_processor(request: object, handler: object):
-    response = await handler(request)
-    if validate_type(response, [
-        "MW-TextResponse",
-        "MW-RenderResponse",
-        "MW-FileResponse",
-        "MW-RedirectResponse"
-    ]):
-        return response.parse(request)
-    return response
-
 
 class BaseResponse:
     def __init__(self, **kwargs):
@@ -122,3 +107,11 @@ class Redirect(BaseResponse):
 
 def redirect(location: str, **kwargs):
     return Redirect(location, **kwargs)
+
+
+@web.middleware
+async def response_processor(request: object, handler: object):
+    response = await handler(request)
+    if isinstance(response, (Text, Render, File, Redirect)):
+        return response.parse(request)
+    return response
