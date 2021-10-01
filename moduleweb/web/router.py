@@ -72,16 +72,16 @@ class RoutesMixin:
             )
         )
 
-    def find_options(self, type: str):
+    def _find_options(self, type: str):
         return [option for option in self.options if isinstance(option, type)]
 
     @property
     def templates(self):
-        return self.find_options(Template)
+        return self._find_options(Template)
 
     @property
     def preroutes(self):
-        return self.find_options(Preroute)
+        return self._find_options(Preroute)
 
     def register(self, app: object, path: str, *args, **kwargs):
         router = app.router
