@@ -10,11 +10,13 @@ class BaseResponse:
         self.cookies = {}
         self.headers = {}
 
-    def prepare(self, response: object):
+    def parse(self, request: object):
+        response = self.prepare(request)
         for name, value in self.cookies.items():
             response.cookies[name] = value
         for name, value in self.headers.items():
             response.headers[name] = value
+        return response
 
 
 class Text(BaseResponse):
@@ -26,14 +28,12 @@ class Text(BaseResponse):
     def __repr__(self):
         return f"<TextResponse content_type='{self.content_type}'>"
 
-    def parse(self, *args, **kwargs):
-        response = web.Response(
+    def prepare(self, _):
+        return web.Response(
             text=self.data,
             content_type=self.content_type,
             **self.kwargs
         )
-        self.prepare(response)
-        return response
 
 
 def text(data: str, *, content_type="text/plain", **kwargs):
@@ -53,15 +53,13 @@ class Render(BaseResponse):
     def __repr__(self):
         return f"<RenderResponse entry_point='{self.entry_point}'>"
 
-    def parse(self, request: object, *args, **kwargs):
-        response = render_template(
+    def prepare(self, request: object):
+        return render_template(
             self.entry_point,
             request,
             self.context,
             **self.kwargs
         )
-        self.prepare(response)
-        return response
 
 
 def render(entry_point: str, context: dict = {}, **kwargs):
@@ -76,13 +74,8 @@ class File(BaseResponse):
     def __repr__(self):
         return f"<FileResponse path='{self.path}'>"
 
-    def parse(self, *args, **kwargs):
-        response = web.FileResponse(
-            path=self.path,
-            **self.kwargs
-        )
-        self.prepare(response)
-        return response
+    def prepare(self, _):
+        return web.FileResponse(self.path, **self.kwargs)
 
 
 def file(path: str, **kwargs):
@@ -97,13 +90,8 @@ class Redirect(BaseResponse):
     def __repr__(self):
         return f"<RedirectResponse location='{self.location}'>"
 
-    def parse(self, *args, **kwargs):
-        response = web.HTTPSeeOther(
-            location=self.location,
-            **self.kwargs
-        )
-        self.prepare(response)
-        return response
+    def prepare(self, _):
+        return web.HTTPSeeOther(self.location, **self.kwargs)
 
 
 def redirect(location: str, **kwargs):

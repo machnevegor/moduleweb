@@ -22,7 +22,7 @@ class Route:
 
 
 class RoutesMixin:
-    def __init__(self, options: list, *args, **kwargs):
+    def __init__(self, options: list):
         for option in options:
             assert isinstance(option, (Template, Preroute)), \
                 "Only templates and preroutes can be passed in the router options!"
@@ -83,7 +83,7 @@ class RoutesMixin:
     def preroutes(self):
         return self._find_options(Preroute)
 
-    def register(self, app: object, path: str, *args, **kwargs):
+    def register(self, app: object, path: str):
         router = app.router
         for template in self.templates:
             template.register(router, path)
@@ -120,7 +120,7 @@ class Middleware:
 
 
 class MiddlewaresMixin:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, _):
         self.middlewares = []
 
     def middleware(self, handler: object):
@@ -141,7 +141,7 @@ class MiddlewaresMixin:
         )
         return handler
 
-    def register(self, app: object, *args, **kwargs):
+    def register(self, app: object, _):
         for middleware in self.middlewares:
             middleware.register(app)
 
