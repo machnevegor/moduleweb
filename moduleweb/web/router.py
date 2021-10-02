@@ -25,7 +25,7 @@ class RoutesMixin:
     def __init__(self, options: list, *args, **kwargs):
         for option in options:
             assert isinstance(option, (Template, Preroute)), \
-                "Only templates and preroutes can be passed in the router option!"
+                "Only templates and preroutes can be passed in the router options!"
 
         self.options = options
         self.routes = []
