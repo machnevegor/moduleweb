@@ -1,6 +1,7 @@
 from aiohttp import web
 from json import dumps
-from aiohttp_jinja2 import render_template
+from aiohttp_jinja2 import render_template, setup
+from jinja2 import FileSystemLoader, PrefixLoader
 
 
 class BaseResponse:
@@ -115,3 +116,12 @@ async def response_processor(request: object, handler: object):
     if isinstance(response, (Text, Render, File, Redirect)):
         return response.parse(request)
     return response
+
+
+async def setup_render(app: object):
+    directory_prefixes = {}
+    for resource in app.router.resources:
+        if isinstance(resource, web.StaticResource):
+            directory = FileSystemLoader(resource.directory)
+            directory_prefixes[resource.prefix[1:]] = directory
+    setup(app, loader=PrefixLoader(directory_prefixes))
