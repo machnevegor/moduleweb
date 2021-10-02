@@ -113,7 +113,7 @@ def redirect(location: str, **kwargs):
 @web.middleware
 async def response_processor(request: object, handler: object):
     response = await handler(request)
-    if isinstance(response, (Text, Render, File, Redirect)):
+    if isinstance(response, BaseResponse):
         return response.parse(request)
     return response
 
