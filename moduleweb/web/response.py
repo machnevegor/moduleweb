@@ -4,8 +4,6 @@ from json import dumps
 from aiohttp_jinja2 import render_template, setup
 from jinja2 import FileSystemLoader, PrefixLoader
 
-from .app import App
-
 
 class BaseResponse:
     def __init__(self, **kwargs) -> None:
@@ -13,7 +11,7 @@ class BaseResponse:
         self.cookies = {}
         self.headers = {}
 
-    def parse(self, request: object) -> web.StreamResponse:
+    def parse(self, request: web.Request) -> web.StreamResponse:
         response = self.respond(request)
         for name, value in self.cookies.items():
             response.cookies[name] = value
@@ -39,11 +37,11 @@ class Text(BaseResponse):
         )
 
 
-def text(data: str, *, content_type: Optional[str] = "text/plain", **kwargs) -> Text:
+def text(data: str, *, content_type: Optional[str] = "text/plain", **kwargs) -> "Text":
     return Text(data, content_type, **kwargs)
 
 
-def json(data: dict, *, content_type: Optional[str] = "application/json", **kwargs) -> Text:
+def json(data: dict, *, content_type: Optional[str] = "application/json", **kwargs) -> "Text":
     return Text(dumps(data), content_type, **kwargs)
 
 
@@ -56,7 +54,7 @@ class Render(BaseResponse):
     def __repr__(self) -> str:
         return f"<RenderResponse entry_point='{self.entry_point}'>"
 
-    def respond(self, request: object) -> web.StreamResponse:
+    def respond(self, request: web.Request) -> web.StreamResponse:
         return render_template(
             self.entry_point,
             request,
@@ -65,7 +63,7 @@ class Render(BaseResponse):
         )
 
 
-def render(entry_point: str, context: Optional[Dict[str, Any]] = {}, **kwargs) -> Render:
+def render(entry_point: str, context: Optional[Dict[str, Any]] = {}, **kwargs) -> "Render":
     return Render(entry_point, context, **kwargs)
 
 
@@ -81,7 +79,7 @@ class File(BaseResponse):
         return web.FileResponse(self.path, **self.kwargs)
 
 
-def file(path: str, **kwargs) -> File:
+def file(path: str, **kwargs) -> "File":
     return File(path, **kwargs)
 
 
@@ -97,19 +95,19 @@ class Redirect(BaseResponse):
         return web.HTTPSeeOther(self.location, **self.kwargs)
 
 
-def redirect(location: str, **kwargs) -> Redirect:
+def redirect(location: str, **kwargs) -> "Redirect":
     return Redirect(location, **kwargs)
 
 
 @web.middleware
-async def response_processor(request: object, handler: object) -> Any:
+async def response_processor(request: web.Request, handler: object) -> Any:
     response = await handler(request)
     if isinstance(response, BaseResponse):
         return response.parse(request)
     return response
 
 
-async def setup_render(app: App) -> None:
+async def setup_render(app: "App") -> None:
     directory_prefixes = {}
     for resource in app.router.resources:
         if isinstance(resource, web.StaticResource):
