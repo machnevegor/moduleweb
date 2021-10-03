@@ -1,6 +1,6 @@
 from aiohttp import web
 
-from .responses import response_processor, setup_render
+from .response import response_processor, setup_render
 from .module import Module
 from .router import Router
 
