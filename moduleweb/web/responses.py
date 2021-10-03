@@ -11,7 +11,7 @@ class BaseResponse:
         self.headers = {}
 
     def parse(self, request: object):
-        response = self.prepare(request)
+        response = self.respond(request)
         for name, value in self.cookies.items():
             response.cookies[name] = value
         for name, value in self.headers.items():
@@ -28,7 +28,7 @@ class Text(BaseResponse):
     def __repr__(self):
         return f"<TextResponse content_type='{self.content_type}'>"
 
-    def prepare(self, _):
+    def respond(self, *_):
         return web.Response(
             text=self.data,
             content_type=self.content_type,
@@ -53,7 +53,7 @@ class Render(BaseResponse):
     def __repr__(self):
         return f"<RenderResponse entry_point='{self.entry_point}'>"
 
-    def prepare(self, request: object):
+    def respond(self, request: object):
         return render_template(
             self.entry_point,
             request,
@@ -74,7 +74,7 @@ class File(BaseResponse):
     def __repr__(self):
         return f"<FileResponse path='{self.path}'>"
 
-    def prepare(self, _):
+    def respond(self, *_):
         return web.FileResponse(self.path, **self.kwargs)
 
 
@@ -90,7 +90,7 @@ class Redirect(BaseResponse):
     def __repr__(self):
         return f"<RedirectResponse location='{self.location}'>"
 
-    def prepare(self, _):
+    def respond(self, *_):
         return web.HTTPSeeOther(self.location, **self.kwargs)
 
 

@@ -120,7 +120,7 @@ class Middleware:
 
 
 class MiddlewaresMixin:
-    def __init__(self, _):
+    def __init__(self, *_):
         self.middlewares = []
 
     def middleware(self, handler: object):
@@ -141,13 +141,13 @@ class MiddlewaresMixin:
         )
         return handler
 
-    def register(self, app: object, _):
+    def register(self, app: object, *_):
         for middleware in self.middlewares:
             middleware.register(app)
 
 
 class BaseRouter(RoutesMixin, MiddlewaresMixin):
-    def __init__(self, options: list):
+    def __init__(self, options: list = []):
         for base in BaseRouter.__bases__:
             base.__init__(self, options)
 
@@ -157,11 +157,5 @@ class BaseRouter(RoutesMixin, MiddlewaresMixin):
 
 
 class Router(BaseRouter):
-    def __init__(self, options: list = []):
-        super().__init__(options)
-
     def __repr__(self):
         return f"<WebRouter routes={len(self.routes)}, middlewares={len(self.middlewares)}>"
-
-    def register(self, app: object, path: str):
-        super().register(app, path)
