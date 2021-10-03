@@ -1,0 +1,21 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="maintenanceService.MaintenanceServiceLogic.configurationFile" />
+          <option value="botCode.MainBotLogic.configurationFile" />
+          <option value="botCode.MainBotLogic.analysisCode" />
+          <option value="botCode.MainBotLogic.featuresCode" />
+          <option value="botCode.MainBotLogic.phrasesDatabase" />
+          <option value="botCode.specialScripts.CompilationNews.configurationFile" />
+          <option value="telebot.types" />
+          <option value="configurationFile" />
+          <option value="object.router" />
+          <option value="_importlib_modulespec.ModuleType.handler" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

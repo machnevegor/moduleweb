@@ -1,7 +1,9 @@
 from attr import dataclass
 from aiohttp import hdrs, web
+from typing import Optional, List, Union, Any
 
 from .options import Template, Preroute
+from .app import App
 
 TYPE_COMMON = "COMMON"
 TYPE_ERROR = "ERROR"
@@ -14,15 +16,15 @@ class Route:
     handler: object
     kwargs: dict
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<WebRoute uri='{self.uri}', method='{self.method}'>"
 
-    def register(self, router: object):
+    def register(self, router: web.UrlDispatcher) -> None:
         router.add_route(self.method, self.uri, self.handler, **self.kwargs)
 
 
 class RoutesMixin:
-    def __init__(self, options: list):
+    def __init__(self, options: List[Union[Template, Preroute]]) -> None:
         for option in options:
             assert isinstance(option, (Template, Preroute)), \
                 "Only templates and preroutes can be passed in the router options!"
@@ -30,8 +32,8 @@ class RoutesMixin:
         self.options = options
         self.routes = []
 
-    def route(self, uri: str, *, methods: list = [hdrs.METH_GET, hdrs.METH_POST], **kwargs):
-        def inner(handler: object):
+    def route(self, uri: str, *, methods: Optional[List[str]] = [hdrs.METH_GET, hdrs.METH_POST], **kwargs) -> object:
+        def inner(handler: object) -> object:
             self.routes += [
                 Route(
                     uri,
@@ -44,25 +46,25 @@ class RoutesMixin:
 
         return inner
 
-    def head(self, uri: str, **kwargs):
+    def head(self, uri: str, **kwargs) -> object:
         return self.route(uri, methods=[hdrs.METH_HEAD], **kwargs)
 
-    def get(self, uri: str, **kwargs):
+    def get(self, uri: str, **kwargs) -> object:
         return self.route(uri, methods=[hdrs.METH_GET], **kwargs)
 
-    def post(self, uri: str, **kwargs):
+    def post(self, uri: str, **kwargs) -> object:
         return self.route(uri, methods=[hdrs.METH_POST], **kwargs)
 
-    def put(self, uri: str, **kwargs):
+    def put(self, uri: str, **kwargs) -> object:
         return self.route(uri, methods=[hdrs.METH_PUT], **kwargs)
 
-    def patch(self, uri: str, **kwargs):
+    def patch(self, uri: str, **kwargs) -> object:
         return self.route(uri, methods=[hdrs.METH_PATCH], **kwargs)
 
-    def delete(self, uri: str, **kwargs):
+    def delete(self, uri: str, **kwargs) -> object:
         return self.route(uri, methods=[hdrs.METH_DELETE], **kwargs)
 
-    def lib(self, uri: str, handler: object, **kwargs):
+    def lib(self, uri: str, handler: object, **kwargs) -> None:
         self.routes.append(
             Route(
                 uri,
@@ -72,18 +74,18 @@ class RoutesMixin:
             )
         )
 
-    def _find_options(self, type: object):
+    def _find_options(self, type: Union[Template, Preroute]) -> List[object]:
         return [option for option in self.options if isinstance(option, type)]
 
     @property
-    def templates(self):
+    def templates(self) -> List[Template]:
         return self._find_options(Template)
 
     @property
-    def preroutes(self):
+    def preroutes(self) -> List[Preroute]:
         return self._find_options(Preroute)
 
-    def register(self, app: object, path: str):
+    def register(self, app: App, path: str) -> None:
         router = app.router
         for template in self.templates:
             template.register(router, path)
@@ -98,15 +100,15 @@ class Middleware:
     handler: object
     type: str
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<WebMiddleware type='{self.type}'>"
 
     @web.middleware
-    async def common(self, request: object, handler: object):
+    async def common(self, request: object, handler: object) -> Any:
         return await self.handler(request, handler)
 
     @web.middleware
-    async def error(self, request: object, handler: object):
+    async def error(self, request: object, handler: object) -> Any:
         try:
             return await handler(request)
         except web.HTTPException as exc:
@@ -114,16 +116,16 @@ class Middleware:
                 raise
             return await self.handler(request)
 
-    def register(self, app: object):
+    def register(self, app: App) -> None:
         middleware = getattr(self, self.type.lower())
         app.middlewares.append(middleware)
 
 
 class MiddlewaresMixin:
-    def __init__(self, *_):
+    def __init__(self, *_) -> None:
         self.middlewares = []
 
-    def middleware(self, handler: object):
+    def middleware(self, handler: object) -> object:
         self.middlewares.append(
             Middleware(
                 handler,
@@ -132,7 +134,7 @@ class MiddlewaresMixin:
         )
         return handler
 
-    def error(self, handler: object):
+    def error(self, handler: object) -> object:
         self.middlewares.append(
             Middleware(
                 handler,
@@ -141,21 +143,21 @@ class MiddlewaresMixin:
         )
         return handler
 
-    def register(self, app: object, *_):
+    def register(self, app: App, *_) -> None:
         for middleware in self.middlewares:
             middleware.register(app)
 
 
 class BaseRouter(RoutesMixin, MiddlewaresMixin):
-    def __init__(self, options: list = []):
+    def __init__(self, options: Optional[List[Union[Template, Preroute]]] = []) -> None:
         for base in BaseRouter.__bases__:
             base.__init__(self, options)
 
-    def register(self, app: object, path: str):
+    def register(self, app: App, path: str) -> None:
         for base in BaseRouter.__bases__:
             base.register(self, app, path)
 
 
 class Router(BaseRouter):
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<WebRouter routes={len(self.routes)}, middlewares={len(self.middlewares)}>"
