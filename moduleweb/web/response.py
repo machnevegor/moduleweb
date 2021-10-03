@@ -4,6 +4,8 @@ from json import dumps
 from aiohttp_jinja2 import render_template, setup
 from jinja2 import FileSystemLoader, PrefixLoader
 
+from .app import App
+
 
 class BaseResponse:
     def __init__(self, **kwargs) -> None:
@@ -37,11 +39,11 @@ class Text(BaseResponse):
         )
 
 
-def text(data: str, *, content_type: Optional[str]="text/plain", **kwargs) -> Text:
+def text(data: str, *, content_type: Optional[str] = "text/plain", **kwargs) -> Text:
     return Text(data, content_type, **kwargs)
 
 
-def json(data: dict, *, content_type: Optional[str]="application/json", **kwargs) -> Text:
+def json(data: dict, *, content_type: Optional[str] = "application/json", **kwargs) -> Text:
     return Text(dumps(data), content_type, **kwargs)
 
 
