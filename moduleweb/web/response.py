@@ -109,8 +109,8 @@ async def response_processor(request: web.Request, handler: object) -> Any:
 
 async def setup_render(app: "ModularApplication") -> None:
     directory_prefixes = {}
-    for resource in app.router.resources:
+    for resource in app.router._resources:
         if isinstance(resource, web.StaticResource):
-            directory = FileSystemLoader(resource.directory)
-            directory_prefixes[resource.prefix[1:]] = directory
+            directory = FileSystemLoader(resource._directory)
+            directory_prefixes[resource._prefix[1:]] = directory
     setup(app, loader=PrefixLoader(directory_prefixes))
