@@ -23,7 +23,7 @@ class Route:
 
 
 class RoutesMixin:
-    def __init__(self, options: List[Union["Template", "Preroute"]]) -> None:
+    def __init__(self, options: List[Union["TemplateOption", "PrerouteOption"]]) -> None:
         for option in options:
             assert isinstance(option, (Template, Preroute)), \
                 "Only templates and preroutes can be passed in the router options!"
@@ -73,18 +73,18 @@ class RoutesMixin:
             )
         )
 
-    def _find_options(self, type: Union["Template", "Preroute"]) -> List[object]:
+    def _find_options(self, type: Union["TemplateOption", "PrerouteOption"]) -> List[object]:
         return [option for option in self.options if isinstance(option, type)]
 
     @property
-    def templates(self) -> List["Template"]:
+    def templates(self) -> List["TemplateOption"]:
         return self._find_options(Template)
 
     @property
-    def preroutes(self) -> List["Preroute"]:
+    def preroutes(self) -> List["PrerouteOption"]:
         return self._find_options(Preroute)
 
-    def register(self, app: "App", path: str) -> None:
+    def register(self, app: "ModularApplication", path: str) -> None:
         router = app.router
         for template in self.templates:
             template.register(router, path)
@@ -115,7 +115,7 @@ class Middleware:
                 raise
             return await self.handler(request)
 
-    def register(self, app: "App") -> None:
+    def register(self, app: "ModularApplication") -> None:
         middleware = getattr(self, self.type.lower())
         app.middlewares.append(middleware)
 
@@ -142,17 +142,17 @@ class MiddlewaresMixin:
         )
         return handler
 
-    def register(self, app: "App", *_) -> None:
+    def register(self, app: "ModularApplication", *_) -> None:
         for middleware in self.middlewares:
             middleware.register(app)
 
 
 class BaseRouter(RoutesMixin, MiddlewaresMixin):
-    def __init__(self, options: Optional[List[Union["Template", "Preroute"]]] = []) -> None:
+    def __init__(self, options: Optional[List[Union["TemplateOption", "PrerouteOption"]]] = []) -> None:
         for base in BaseRouter.__bases__:
             base.__init__(self, options)
 
-    def register(self, app: "App", path: str) -> None:
+    def register(self, app: "ModularApplication", path: str) -> None:
         for base in BaseRouter.__bases__:
             base.register(self, app, path)
 

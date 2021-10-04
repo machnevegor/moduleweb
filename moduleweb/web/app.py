@@ -16,7 +16,7 @@ class App(web.Application):
     def __repr__(self) -> str:
         return f"<ModularApplication 0x{id(self):x}>"
 
-    def add(self, modules: List[Union["Module", "Router"]]) -> None:
+    def add(self, modules: List[Union["ApplicationModule", "WebRouter"]]) -> None:
         for module in modules:
             assert isinstance(module, (Module, Router)), \
                 "The add method registers only modules for the application!"

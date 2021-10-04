@@ -37,11 +37,11 @@ class Text(BaseResponse):
         )
 
 
-def text(data: str, *, content_type: Optional[str] = "text/plain", **kwargs) -> "Text":
+def text(data: str, *, content_type: Optional[str] = "text/plain", **kwargs) -> "TextResponse":
     return Text(data, content_type, **kwargs)
 
 
-def json(data: dict, *, content_type: Optional[str] = "application/json", **kwargs) -> "Text":
+def json(data: dict, *, content_type: Optional[str] = "application/json", **kwargs) -> "TextResponse":
     return Text(dumps(data), content_type, **kwargs)
 
 
@@ -63,7 +63,7 @@ class Render(BaseResponse):
         )
 
 
-def render(entry_point: str, context: Optional[Dict[str, Any]] = {}, **kwargs) -> "Render":
+def render(entry_point: str, context: Optional[Dict[str, Any]] = {}, **kwargs) -> "RenderResponse":
     return Render(entry_point, context, **kwargs)
 
 
@@ -79,7 +79,7 @@ class File(BaseResponse):
         return web.FileResponse(self.path, **self.kwargs)
 
 
-def file(path: str, **kwargs) -> "File":
+def file(path: str, **kwargs) -> "FileResponse":
     return File(path, **kwargs)
 
 
@@ -95,7 +95,7 @@ class Redirect(BaseResponse):
         return web.HTTPSeeOther(self.location, **self.kwargs)
 
 
-def redirect(location: str, **kwargs) -> "Redirect":
+def redirect(location: str, **kwargs) -> "RedirectResponse":
     return Redirect(location, **kwargs)
 
 
@@ -107,7 +107,7 @@ async def response_processor(request: web.Request, handler: object) -> Any:
     return response
 
 
-async def setup_render(app: "App") -> None:
+async def setup_render(app: "ModularApplication") -> None:
     directory_prefixes = {}
     for resource in app.router.resources:
         if isinstance(resource, web.StaticResource):

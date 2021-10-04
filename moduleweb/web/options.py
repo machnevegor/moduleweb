@@ -18,7 +18,7 @@ class Template:
         router.add_static("/" + self.name, path + self.folder, **self.kwargs)
 
 
-def template(name: str, folder: Optional[str] = "template", **kwargs) -> "Template":
+def template(name: str, folder: Optional[str] = "template", **kwargs) -> "TemplateOption":
     return Template(name, folder, kwargs)
 
 
@@ -31,12 +31,12 @@ class Preroute:
     def __repr__(self) -> str:
         return f"<PrerouteOption prefix='{self.prefix}'>"
 
-    def parse(self, routes: List["Route"]) -> None:
+    def parse(self, routes: List["WebRoute"]) -> None:
         for route in routes:
             if route.uri.startswith(self.prefix):
                 route.uri = self.uri + route.uri[len(self.prefix):]
                 route.kwargs = {**self.kwargs, **route.kwargs}
 
 
-def preroute(uri: str, prefix: Optional[str] = "~", **kwargs) -> "Preroute":
+def preroute(uri: str, prefix: Optional[str] = "~", **kwargs) -> "PrerouteOption":
     return Preroute(uri, prefix, kwargs)
