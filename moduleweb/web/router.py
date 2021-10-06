@@ -28,7 +28,7 @@ class RoutesMixin:
             assert isinstance(option, (Template, Preroute)), \
                 "Only templates and preroutes can be passed in the router options!"
 
-        self.options = options
+        self._options = options
         self.routes = []
 
     def route(self, uri: str, *, methods: Optional[List[str]] = [hdrs.METH_GET, hdrs.METH_POST], **kwargs) -> object:
@@ -74,7 +74,7 @@ class RoutesMixin:
         )
 
     def _find_options(self, type: Union["TemplateOption", "PrerouteOption"]) -> List[object]:
-        return [option for option in self.options if isinstance(option, type)]
+        return [option for option in self._options if isinstance(option, type)]
 
     @property
     def templates(self) -> List["TemplateOption"]:
@@ -84,10 +84,10 @@ class RoutesMixin:
     def preroutes(self) -> List["PrerouteOption"]:
         return self._find_options(Preroute)
 
-    def register(self, app: "ModularApplication", path: str) -> None:
+    def register(self, app: "ModularApplication", location: str) -> None:
         router = app.router
         for template in self.templates:
-            template.register(router, path)
+            template.register(router, location)
         for preroute in self.preroutes:
             preroute.parse(self.routes)
         for route in self.routes:
@@ -152,9 +152,9 @@ class BaseRouter(RoutesMixin, MiddlewaresMixin):
         for base in BaseRouter.__bases__:
             base.__init__(self, options)
 
-    def register(self, app: "ModularApplication", path: str) -> None:
+    def register(self, app: "ModularApplication", location: str) -> None:
         for base in BaseRouter.__bases__:
-            base.register(self, app, path)
+            base.register(self, app, location)
 
 
 class Router(BaseRouter):

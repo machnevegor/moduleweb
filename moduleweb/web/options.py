@@ -12,10 +12,10 @@ class Template:
     def __repr__(self) -> str:
         return f"<TemplateOption name='{self.name}'>"
 
-    def register(self, router: web.UrlDispatcher, path: str) -> None:
+    def register(self, router: web.UrlDispatcher, location: str) -> None:
         assert not self.name.startswith("/") and self.name, \
             "The template cannot be registered because name starts with a slash or is empty!"
-        router.add_static("/" + self.name, path + self.folder, **self.kwargs)
+        router.add_static("/" + self.name, location + self.folder, **self.kwargs)
 
 
 def template(name: str, folder: Optional[str] = "template", **kwargs) -> "TemplateOption":

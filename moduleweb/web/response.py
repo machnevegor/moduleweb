@@ -84,15 +84,15 @@ def file(path: str, **kwargs) -> "FileResponse":
 
 
 class Redirect(BaseResponse):
-    def __init__(self, location: str, **kwargs) -> None:
+    def __init__(self, uri: str, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.location = location
+        self.uri = uri
 
     def __repr__(self) -> str:
-        return f"<RedirectResponse location='{self.location}'>"
+        return f"<RedirectResponse uri='{self.uri}'>"
 
     def respond(self, *_) -> web.HTTPSeeOther:
-        return web.HTTPSeeOther(self.location, **self.kwargs)
+        return web.HTTPSeeOther(self.uri, **self.kwargs)
 
 
 def redirect(location: str, **kwargs) -> "RedirectResponse":
@@ -107,9 +107,9 @@ async def response_processor(request: web.Request, handler: object) -> Any:
     return response
 
 
-async def setup_render(app: "ModularApplication") -> None:
+async def render_setuper(app: "ModularApplication") -> None:
     directory_prefixes = {}
-    for resource in app.router._resources:
+    for resource in app.router.resources():
         if isinstance(resource, web.StaticResource):
             directory = FileSystemLoader(resource._directory)
             directory_prefixes[resource._prefix[1:]] = directory
