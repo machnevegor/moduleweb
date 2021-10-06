@@ -95,8 +95,8 @@ class Redirect(BaseResponse):
         return web.HTTPSeeOther(self.uri, **self.kwargs)
 
 
-def redirect(location: str, **kwargs) -> "RedirectResponse":
-    return Redirect(location, **kwargs)
+def redirect(uri: str, **kwargs) -> "RedirectResponse":
+    return Redirect(uri, **kwargs)
 
 
 @web.middleware
