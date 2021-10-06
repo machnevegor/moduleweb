@@ -109,7 +109,7 @@ async def response_processor(request: web.Request, handler: object) -> Any:
 
 async def render_setuper(app: "ModularApplication") -> None:
     directory_prefixes = {}
-    for resource in app.router.resources():
+    for resource in app.router._resources:
         if isinstance(resource, web.StaticResource):
             directory = FileSystemLoader(resource._directory)
             directory_prefixes[resource._prefix[1:]] = directory
