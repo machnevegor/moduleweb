@@ -11,8 +11,8 @@ class BaseResponse:
         self.cookies = {}
         self.headers = {}
 
-    def parse(self, request: web.Request) -> web.StreamResponse:
-        response = self.respond(request)
+    def prepare(self, request: web.Request) -> web.StreamResponse:
+        response = self.submit(request)
         for name, value in self.cookies.items():
             response.cookies[name] = value
         for name, value in self.headers.items():
@@ -29,7 +29,7 @@ class Text(BaseResponse):
     def __repr__(self) -> str:
         return f"<TextResponse content_type='{self.content_type}'>"
 
-    def respond(self, *_) -> web.StreamResponse:
+    def submit(self, *_) -> web.StreamResponse:
         return web.Response(
             text=self.data,
             content_type=self.content_type,
@@ -54,7 +54,7 @@ class Render(BaseResponse):
     def __repr__(self) -> str:
         return f"<RenderResponse entry_point='{self.entry_point}'>"
 
-    def respond(self, request: web.Request) -> web.StreamResponse:
+    def submit(self, request: web.Request) -> web.StreamResponse:
         return render_template(
             self.entry_point,
             request,
@@ -75,7 +75,7 @@ class File(BaseResponse):
     def __repr__(self) -> str:
         return f"<FileResponse path='{self.path}'>"
 
-    def respond(self, *_) -> web.StreamResponse:
+    def submit(self, *_) -> web.StreamResponse:
         return web.FileResponse(self.path, **self.kwargs)
 
 
@@ -91,7 +91,7 @@ class Redirect(BaseResponse):
     def __repr__(self) -> str:
         return f"<RedirectResponse uri='{self.uri}'>"
 
-    def respond(self, *_) -> web.HTTPSeeOther:
+    def submit(self, *_) -> web.HTTPSeeOther:
         return web.HTTPSeeOther(self.uri, **self.kwargs)
 
 
@@ -103,7 +103,7 @@ def redirect(uri: str, **kwargs) -> "RedirectResponse":
 async def response_processor(request: web.Request, handler: object) -> Any:
     response = await handler(request)
     if isinstance(response, BaseResponse):
-        return response.parse(request)
+        return response.prepare(request)
     return response
 
 
