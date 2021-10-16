@@ -62,6 +62,7 @@ class App(web.Application):
         if self.import_name.count("."):
             path, _ = self.import_name.rsplit(".", 1)
             return path.replace(".", "/") + "/"
+        return ""
 
     def add(self, modules: List[Union["Module", "Router"]]) -> None:
         """Method that registers application modules.
