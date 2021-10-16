@@ -2,7 +2,7 @@ from .app import App
 from .module import module
 from .router import Router
 from .options import template, preroute
-from .response import text, json, render, file, redirect
+from .response import text, json, render, file, redirect, stream, socket
 
 __all__ = (
     "App",
@@ -14,5 +14,7 @@ __all__ = (
     "json",
     "render",
     "file",
-    "redirect"
+    "redirect",
+    "stream",
+    "socket"
 )
