@@ -162,4 +162,4 @@ async def render_setuper(app: "App") -> None:
         if isinstance(resource, web.StaticResource):
             directory = FileSystemLoader(resource._directory)
             directory_prefixes[resource._prefix[1:]] = directory
-    setup(app, loader=PrefixLoader(directory_prefixes))
+    setup(app, loader=PrefixLoader(directory_prefixes), enable_async=True)
