@@ -52,7 +52,7 @@ class App(web.Application):
 
     @property
     def location(self) -> str:
-        """Class property that stores the location of the application.
+        """Class property that returns the location of the application.
 
         :return:    Path to directory where the file storing the modular
                     application is located, relative to the startup file.
